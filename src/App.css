@@ -32,3 +32,15 @@ p, span, h1, h2, h3, h4, strong, small, a{
   margin: 0 !important;
   padding: 0 !important;
 }
+.text-xs{
+  font-size: x-small;
+}
+.text-sm{
+  font-size: small;
+}
+.text-lg{
+  font-size: large;
+}
+.text-xl{
+  font-size: x-large;
+}
