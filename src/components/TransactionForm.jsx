@@ -2,27 +2,28 @@ import React from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 
-const TransactionForm = ({ initialValues, isEdit = false,setTransactions,hideModal }) => {
+const TransactionForm = ({ initialValues, setTransactions,hideModal,transactionToEdit }) => {
   const validationSchema = Yup.object({
     type:        Yup.string().required('Required'),
     name:        Yup.string().required('Required'),
-    amount:      Yup.number().required('Required').positive('Must be positive'),
-    transaction: Yup.number().positive('Must be positive'),
+    amount:      Yup.number().required('Required').positive('Must be positive').min(0),
+    transaction: Yup.number().positive('Must be positive').min(0),
     wallet:      Yup.string().required('Required'),
     category:    Yup.string().required('Required'),
     date:        Yup.date().required('Required'),
     notes:       Yup.string()
   });
+  const isEdit = Boolean(transactionToEdit?.id);
 
   const handleSubmit = (values, { resetForm }) => {
     const updatedTransaction = {
       ...values,
-      id: isEdit ? values.id : Date.now(),
+      id: Date.now(),
     };
 
     if (isEdit) {
       setTransactions(prev =>
-        prev.map(t => (t.id === values.id ? updatedTransaction : t))
+        prev.map(transaction => (transaction.id === transactionToEdit?.id ? updatedTransaction : transaction))
       );
     } else {
       setTransactions(prev => [updatedTransaction, ...prev]);

@@ -5,6 +5,9 @@ import ModalFormComponent from '../components/Modal';
 
 export default function Transactions() {
     const [searchQuery, setsearchQuery] = useState("");
+    const [typeFilter, setTypeFilter] = useState("all");
+    const [dateFilter, setDateFilter] = useState("all");
+    const [transactionToEdit, setTransactionToEdit] = useState('');
     const [transactions,setTransactions]=useState([
         {
             id: 1,
@@ -23,6 +26,28 @@ export default function Transactions() {
     const showModal = () => {
         setIsModalOpen(true);
     };
+    const handleDeleteTransaction=(transactionId)=>{
+        setTransactions(prev =>
+            prev.filter(transaction => transaction.id !== transactionId)
+        );
+    };
+    const handleSortByName = (order) => {
+        const sorted = [...transactions].sort((a, b) => {
+            const nameA = a.name.toLowerCase();
+            const nameB = b.name.toLowerCase();
+            if (order === 'asc'){
+                return nameA.localeCompare(nameB);
+            }else {
+                return nameB.localeCompare(nameA);
+            }
+        });
+      
+        setTransactions(sorted);
+    };
+    const handleEditTransaction = (transaction)=>{
+        setTransactionToEdit(transaction);
+        showModal()
+    }
 
     return (
         <div className='py-2'>
@@ -30,8 +55,35 @@ export default function Transactions() {
                 <h1 className="text-2xl font-bold text-blue-600 custom-color-dark fw-bold">Transactions</h1>
                 <div className="d-flex flex-row gap-2 align-items-center">
                     <input type="search" placeholder='search transactions' className='form-control form-control-sm' onChange={(e)=>{setsearchQuery(e.target.value)}}/>
-                    <button className="btn btn-sm btn-light fw-bold d-flex flex-row align-items-center gap-2"><CalendarIcon/>Date</button>
-                    <button className="btn btn-sm custom-bg-secondary custom-color-primary fw-bold d-flex flex-row align-items-center gap-2"><FilterIcon/>Filter</button>
+                    <div className="dropdown">
+                        <button
+                            className="btn btn-sm btn-light fw-bold d-flex flex-row align-items-center gap-2 dropdown-toggle"
+                            type="button"
+                            id="dateDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <CalendarIcon /> Date
+                        </button>
+                        <ul className="dropdown-menu" aria-labelledby="dateDropdown">
+                            <li><button className="dropdown-item" onClick={() => setDateFilter("all")}>All</button></li>
+                            <li><button className="dropdown-item" onClick={() => setDateFilter("today")}>Today</button></li>
+                            <li><button className="dropdown-item" onClick={() => setDateFilter("yesterday")}>Yesterday</button></li>
+                            <li><button className="dropdown-item" onClick={() => setDateFilter("week")}>This Week</button></li>
+                        </ul>
+                    </div>
+                    <div className="dropdown dropstart">
+                        <button type="button" className="btn btn-sm custom-bg-secondary custom-color-primary fw-bold d-flex flex-row align-items-center gap-2" id="filterOptionsMenuButton" data-bs-toggle="dropdown" aria-expanded="false"><FilterIcon/>Filter</button>
+                        <ul aria-labelledby="filterOptionsMenuButton" className="dropdown-menu p-2 custom-bg-base shadow rounded">
+                            <li><h6 className="dropdown-header fw-bold custom-color-primary text-lg">Sort by</h6></li>
+                            <li><button className="dropdown-item" onClick={() => handleSortByName('desc')}>Z-A </button></li>
+                            <li><button className="dropdown-item" onClick={() => handleSortByName('asc')}>A-Z </button></li>
+                            <li><h6 className="dropdown-header fw-bold custom-color-primary text-lg">Filter by Type</h6></li>
+                            <li><button className="dropdown-item" onClick={() => setTypeFilter('all')}>All</button></li>
+                            <li><button className="dropdown-item" onClick={() => setTypeFilter('income')}>Income</button></li>
+                            <li><button className="dropdown-item" onClick={() => setTypeFilter('expense')}>Expense</button></li>
+                        </ul>
+                    </div>
                     <button className='btn btn-sm custom-bg-primary custom-color-secondary fw-bold d-flex flex-row align-items-center gap-2' onClick={showModal}><AddIcon/>New</button>
                 </div>
             </div>
@@ -56,7 +108,17 @@ export default function Transactions() {
                             </tr>
                         </thead>
                         <tbody className=''>
-                            {transactions.filter((transaction)=>transaction.name.toLowerCase().includes(searchQuery.toLowerCase())).map((transaction)=>{
+                            {transactions
+                                .filter(transaction =>
+                                    transaction.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                                    (typeFilter === "all" || transaction.type === typeFilter) &&
+                                    (dateFilter === "all" ||
+                                        (dateFilter === "today" && moment(transaction.date).isSame(moment(), 'day')) ||
+                                        (dateFilter === "yesterday" && moment(transaction.date).isSame(moment().subtract(1, 'days'), 'day')) ||
+                                        (dateFilter === "week" && moment(transaction.date).isSame(moment(), 'week'))
+                                    )
+                                )
+                                .map((transaction)=>{
                                 return(
                                     <tr key={transaction.id}>
                                         <th style={{width:'200px'}}>{transaction.category}</th>
@@ -67,8 +129,8 @@ export default function Transactions() {
                                         <td><span className={`badge custom-bg-${transaction.type === 'income' ? 'secondary' : 'primary' } p-1`}>{transaction.type}</span></td>
                                         <td style={{width:'200px'}}>
                                             <div className='d-flex flex-row gap-2'>
-                                                <button className='btn btn-sm btn-outline-dark gap-2 align-items-center'><EditIcon/>Manage</button>
-                                                <button className='btn btn-sm btn-danger gap-2 align-items-center'><DeleteIcon/>Delete</button>
+                                                <button className='btn btn-sm btn-outline-dark gap-2 align-items-center' onClick={()=>handleEditTransaction(transaction)}><EditIcon/>Manage</button>
+                                                <button className='btn btn-sm btn-danger gap-2 align-items-center' onClick={()=>handleDeleteTransaction(transaction.id)}><DeleteIcon/>Delete</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -94,7 +156,7 @@ export default function Transactions() {
                 </div>
                 )
             }
-            <ModalFormComponent isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setTransactions={setTransactions}/>
+            <ModalFormComponent isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setTransactions={setTransactions} transactionToEdit={transactionToEdit}/>
         </div>
     )
 };

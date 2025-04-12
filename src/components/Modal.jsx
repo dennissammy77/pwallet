@@ -1,12 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import TransactionForm from './TransactionForm';
 import Modal from "react-bootstrap/Modal";
 
-function ModalFormComponent ({isModalOpen,setIsModalOpen,setTransactions,isEdit=false}){
-    console.log(isModalOpen)
+function ModalFormComponent ({isModalOpen,setIsModalOpen,setTransactions,transactionToEdit}){
+    const [isEdit,setIsEdit]=useState(false)
     const hideModal = () => {
         setIsModalOpen(false);
     };
+    useEffect(()=>{
+        if(transactionToEdit){
+            setIsEdit(true)
+        }
+    },[transactionToEdit])
     return (
       <Modal show={isModalOpen} onHide={hideModal} centered>
         <Modal.Header>
@@ -16,16 +21,16 @@ function ModalFormComponent ({isModalOpen,setIsModalOpen,setTransactions,isEdit=
         <Modal.Body>
             <TransactionForm
                 initialValues={{
-                    type: 'expense',
-                    name: '',
-                    amount: 0,
-                    transaction: 0,
-                    wallet: '',
-                    category: '',
-                    date: '',
-                    notes: ''
+                    type: transactionToEdit.type || 'expense',
+                    name: transactionToEdit.name || '',
+                    amount: transactionToEdit.amount || 0,
+                    transaction: transactionToEdit.transaction || 0,
+                    wallet: transactionToEdit.wallet || '',
+                    category: transactionToEdit.category || '',
+                    date: transactionToEdit.date || '',
+                    notes: transactionToEdit.notes || ''
                 }}
-                isEdit={isEdit}
+                isEdit={transactionToEdit}
                 setTransactions={setTransactions}
                 hideModal={hideModal}
             />
