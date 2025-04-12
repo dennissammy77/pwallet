@@ -1,0 +1,22 @@
+:root {
+  --primary: #673147; /* Deep Plum */
+  --secondary: #A0C2AE; /* Soft Green*/
+  --base: #F0EBE3; /*Titan White*/
+  --dark: #2E2E2E; /*Titan White*/
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: var(--base);
+  font-family: "Montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
