@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import TransactionForm from './TransactionForm';
 import Modal from "react-bootstrap/Modal";
 
 function ModalFormComponent ({isModalOpen,setIsModalOpen,setTransactions,transactionToEdit}){
-    const [isEdit,setIsEdit]=useState(false)
+    const isEdit = Boolean(transactionToEdit?.id);
     const hideModal = () => {
         setIsModalOpen(false);
     };
-    useEffect(()=>{
-        if(transactionToEdit){
-            setIsEdit(true)
-        }
-    },[transactionToEdit])
+    console.log(transactionToEdit)
+    
     return (
       <Modal show={isModalOpen} onHide={hideModal} centered>
         <Modal.Header>
@@ -30,7 +27,7 @@ function ModalFormComponent ({isModalOpen,setIsModalOpen,setTransactions,transac
                     date: transactionToEdit.date || '',
                     notes: transactionToEdit.notes || ''
                 }}
-                isEdit={transactionToEdit}
+                transactionToEdit={transactionToEdit}
                 setTransactions={setTransactions}
                 hideModal={hideModal}
             />

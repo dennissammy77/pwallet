@@ -23,7 +23,9 @@ const TransactionForm = ({ initialValues, setTransactions,hideModal,transactionT
 
     if (isEdit) {
       setTransactions(prev =>
-        prev.map(transaction => (transaction.id === transactionToEdit?.id ? updatedTransaction : transaction))
+        prev.map(transaction =>
+          transaction.id === transactionToEdit?.id ? updatedTransaction : transaction
+        )
       );
     } else {
       setTransactions(prev => [updatedTransaction, ...prev]);
