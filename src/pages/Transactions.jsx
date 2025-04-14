@@ -52,40 +52,42 @@ export default function Transactions() {
 
     return (
         <div className='py-2'>
-            <div className="d-none flex-row justify-content-between my-2">
-                <h1 className="text-2xl font-bold text-blue-600 custom-color-dark fw-bold">Transactions</h1>
-                <div className="d-flex flex-row gap-2 align-items-center">
+            <div className="d-flex flex-column flex-md-row justify-content-between my-2">
+                <h1 className="custom-color-dark fw-bold">Transactions</h1>
+                <div className="d-flex flex-column flex-md-row gap-2 align-items-center">
                     <input type="search" placeholder='search transactions' className='form-control form-control-sm' onChange={(e)=>{setsearchQuery(e.target.value)}}/>
-                    <div className="dropdown">
-                        <button
-                            className="btn btn-sm btn-light fw-bold d-flex flex-row align-items-center gap-2 dropdown-toggle"
-                            type="button"
-                            id="dateDropdown"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                        >
-                            <CalendarIcon /> Date
-                        </button>
-                        <ul className="dropdown-menu" aria-labelledby="dateDropdown">
-                            <li><button className="dropdown-item" onClick={() => setDateFilter("all")}>All</button></li>
-                            <li><button className="dropdown-item" onClick={() => setDateFilter("today")}>Today</button></li>
-                            <li><button className="dropdown-item" onClick={() => setDateFilter("yesterday")}>Yesterday</button></li>
-                            <li><button className="dropdown-item" onClick={() => setDateFilter("week")}>This Week</button></li>
-                        </ul>
+                    <div className="d-flex flex-row gap-2 align-items-sm-start align-items-center">
+                        <div className="dropdown">
+                            <button
+                                className="btn btn-sm btn-light fw-bold d-flex flex-row align-items-center gap-2 dropdown-toggle"
+                                type="button"
+                                id="dateDropdown"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <CalendarIcon /> Date
+                            </button>
+                            <ul className="dropdown-menu" aria-labelledby="dateDropdown">
+                                <li><button className="dropdown-item" onClick={() => setDateFilter("all")}>All</button></li>
+                                <li><button className="dropdown-item" onClick={() => setDateFilter("today")}>Today</button></li>
+                                <li><button className="dropdown-item" onClick={() => setDateFilter("yesterday")}>Yesterday</button></li>
+                                <li><button className="dropdown-item" onClick={() => setDateFilter("week")}>This Week</button></li>
+                            </ul>
+                        </div>
+                        <div className="dropdown">
+                            <button type="button" className="btn btn-sm custom-bg-secondary custom-color-primary fw-bold d-flex flex-row align-items-center gap-2" id="filterOptionsMenuButton" data-bs-toggle="dropdown" aria-expanded="false"><FilterIcon/>Filter</button>
+                            <ul aria-labelledby="filterOptionsMenuButton" className="dropdown-menu p-2 custom-bg-base shadow rounded">
+                                <li><h6 className="dropdown-header fw-bold custom-color-primary text-lg">Sort by</h6></li>
+                                <li><button className="dropdown-item" onClick={() => handleSortByName('desc')}>Z-A </button></li>
+                                <li><button className="dropdown-item" onClick={() => handleSortByName('asc')}>A-Z </button></li>
+                                <li><h6 className="dropdown-header fw-bold custom-color-primary text-lg">Filter by Type</h6></li>
+                                <li><button className="dropdown-item" onClick={() => setTypeFilter('all')}>All</button></li>
+                                <li><button className="dropdown-item" onClick={() => setTypeFilter('income')}>Income</button></li>
+                                <li><button className="dropdown-item" onClick={() => setTypeFilter('expense')}>Expense</button></li>
+                            </ul>
+                        </div>
+                        <button className='btn btn-sm custom-bg-primary custom-color-secondary fw-bold d-flex flex-row align-items-center gap-2' onClick={showModal}><AddIcon/>New</button>
                     </div>
-                    <div className="dropdown dropstart">
-                        <button type="button" className="btn btn-sm custom-bg-secondary custom-color-primary fw-bold d-flex flex-row align-items-center gap-2" id="filterOptionsMenuButton" data-bs-toggle="dropdown" aria-expanded="false"><FilterIcon/>Filter</button>
-                        <ul aria-labelledby="filterOptionsMenuButton" className="dropdown-menu p-2 custom-bg-base shadow rounded">
-                            <li><h6 className="dropdown-header fw-bold custom-color-primary text-lg">Sort by</h6></li>
-                            <li><button className="dropdown-item" onClick={() => handleSortByName('desc')}>Z-A </button></li>
-                            <li><button className="dropdown-item" onClick={() => handleSortByName('asc')}>A-Z </button></li>
-                            <li><h6 className="dropdown-header fw-bold custom-color-primary text-lg">Filter by Type</h6></li>
-                            <li><button className="dropdown-item" onClick={() => setTypeFilter('all')}>All</button></li>
-                            <li><button className="dropdown-item" onClick={() => setTypeFilter('income')}>Income</button></li>
-                            <li><button className="dropdown-item" onClick={() => setTypeFilter('expense')}>Expense</button></li>
-                        </ul>
-                    </div>
-                    <button className='btn btn-sm custom-bg-primary custom-color-secondary fw-bold d-flex flex-row align-items-center gap-2' onClick={showModal}><AddIcon/>New</button>
                 </div>
             </div>
             {transactions.length === 0 && (
